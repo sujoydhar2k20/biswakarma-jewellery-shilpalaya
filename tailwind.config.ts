@@ -34,7 +34,12 @@ export default {
           light: '#F1E5AC',
           dark: '#9E7E23',
         },
-        cream: '#F5F5DC',
+        'ruby-red': {
+          DEFAULT: '#E63946',
+          light: '#FF6B6B',
+          dark: '#C1121F',
+        },
+        'cream': '#F5F5DC',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'

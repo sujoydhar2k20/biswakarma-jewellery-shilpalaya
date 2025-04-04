@@ -3,15 +3,43 @@ import { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const categories = Array.from({ length: 102 }, (_, i) => ({
-  id: i + 1,
-  name: `Category ${i + 1}`,
-  image: '/placeholder.svg'
-}));
+// Define category types
+const categoryTypes = [
+  { id: 'gold', name: '22 Karat Gold Collections', color: 'gold' },
+  { id: 'pearl', name: 'Pearl Collections', color: 'cream' },
+  { id: 'silver', name: 'Silver Collections', color: 'gray-200' },
+  { id: 'diamond', name: 'Diamond Collections', color: 'white' }
+];
+
+// Distribute 102 categories across the 4 types
+const generateCategories = () => {
+  const allCategories = [];
+  let count = 1;
+  
+  // Distribute categories evenly (roughly 25-26 per type)
+  for (let type of categoryTypes) {
+    const itemCount = Math.floor(102 / categoryTypes.length) + (type.id === 'gold' ? 2 : 0);
+    
+    for (let i = 0; i < itemCount; i++) {
+      allCategories.push({
+        id: count,
+        name: `${type.name.split(' ')[0]} ${count}`,
+        image: '/placeholder.svg',
+        type: type.id
+      });
+      count++;
+    }
+  }
+  
+  return allCategories;
+};
+
+const categories = generateCategories();
 
 const CategoryCarousel = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [activeType, setActiveType] = useState('gold');
   
   const scrollAmount = 300;
   
@@ -31,16 +59,32 @@ const CategoryCarousel = () => {
     setScrollPosition(newPosition);
   };
   
+  const filteredCategories = categories.filter(cat => cat.type === activeType);
+  
   return (
     <section className="py-16 bg-cream">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-playfair font-bold">Our Categories</h2>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <h2 className="text-3xl md:text-4xl font-playfair font-bold text-center md:text-left">Our <span className="text-ruby-red">Collections</span></h2>
+          
+          <div className="flex flex-wrap justify-center gap-2">
+            {categoryTypes.map((type) => (
+              <Button 
+                key={type.id}
+                variant={activeType === type.id ? "default" : "outline"}
+                className={`${activeType === type.id ? 'bg-ruby-red text-white' : 'border-ruby-red text-ruby-red hover:bg-ruby-red/10'} transition-all duration-300`}
+                onClick={() => setActiveType(type.id)}
+              >
+                {type.name}
+              </Button>
+            ))}
+          </div>
+          
           <div className="flex space-x-2">
             <Button 
               variant="outline" 
               size="icon" 
-              className="border-gold text-gold hover:bg-gold hover:text-white"
+              className="border-ruby-red text-ruby-red hover:bg-ruby-red hover:text-white"
               onClick={() => handleScroll('left')}
             >
               <ChevronLeft size={20} />
@@ -48,7 +92,7 @@ const CategoryCarousel = () => {
             <Button 
               variant="outline" 
               size="icon"
-              className="border-gold text-gold hover:bg-gold hover:text-white"
+              className="border-ruby-red text-ruby-red hover:bg-ruby-red hover:text-white"
               onClick={() => handleScroll('right')}
             >
               <ChevronRight size={20} />
@@ -62,20 +106,20 @@ const CategoryCarousel = () => {
             className="flex gap-4 overflow-x-auto pb-6 scroll-smooth hide-scrollbar"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {categories.map((category) => (
+            {filteredCategories.map((category) => (
               <a 
                 href={`/category/${category.id}`} 
                 key={category.id}
                 className="flex-shrink-0 group"
               >
-                <div className="relative w-48 h-48 overflow-hidden">
+                <div className="relative w-48 h-48 overflow-hidden rounded-lg shadow-md">
                   <img 
                     src={category.image} 
                     alt={category.name}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                    <span className="text-white font-medium text-lg font-playfair">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent group-hover:from-ruby-red/80 transition-colors flex items-end justify-center">
+                    <span className="text-white font-medium text-lg font-playfair p-4 text-center">
                       {category.name}
                     </span>
                   </div>
