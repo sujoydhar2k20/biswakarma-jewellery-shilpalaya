@@ -20,7 +20,7 @@ const collections = [
   },
   {
     id: 2,
-    name: "Gold Heritage",
+    name: "22K Gold Heritage",
     description: "Traditional designs with modern craftsmanship",
     image: "/placeholder.svg",
     category: "22K Gold"

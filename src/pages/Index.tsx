@@ -7,6 +7,9 @@ import FeaturedCollections from "@/components/FeaturedCollections";
 import TestimonialSlider from "@/components/TestimonialSlider";
 import AboutSection from "@/components/AboutSection";
 import LocationMap from "@/components/LocationMap";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import PaymentMethods from "@/components/PaymentMethods";
+import GoogleReviews from "@/components/GoogleReviews";
 
 const Index = () => {
   return (
@@ -16,9 +19,12 @@ const Index = () => {
         <HeroSlider />
         <CategoryCarousel />
         <FeaturedCollections />
+        <GoogleReviews />
+        <PaymentMethods />
         <TestimonialSlider />
         <AboutSection />
         <LocationMap />
+        <WhatsAppButton />
       </main>
       <Footer />
     </div>
