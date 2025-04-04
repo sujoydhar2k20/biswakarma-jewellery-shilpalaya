@@ -1,11 +1,10 @@
-
 import { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Define category types
 const categoryTypes = [
-  { id: 'gold', name: '22 Karat Gold Collections', color: 'gold' },
+  { id: 'gold', name: '22 Karat Gold Collections', color: 'ruby-red' },
   { id: 'pearl', name: 'Pearl Collections', color: 'cream' },
   { id: 'silver', name: 'Silver Collections', color: 'gray-200' },
   { id: 'diamond', name: 'Diamond Collections', color: 'white' }
@@ -72,7 +71,7 @@ const CategoryCarousel = () => {
               <Button 
                 key={type.id}
                 variant={activeType === type.id ? "default" : "outline"}
-                className={`${activeType === type.id ? 'bg-ruby-red text-white' : 'border-ruby-red text-ruby-red hover:bg-ruby-red/10'} transition-all duration-300`}
+                className="transition-all duration-300"
                 onClick={() => setActiveType(type.id)}
               >
                 {type.name}
@@ -84,7 +83,6 @@ const CategoryCarousel = () => {
             <Button 
               variant="outline" 
               size="icon" 
-              className="border-ruby-red text-ruby-red hover:bg-ruby-red hover:text-white"
               onClick={() => handleScroll('left')}
             >
               <ChevronLeft size={20} />
@@ -92,7 +90,6 @@ const CategoryCarousel = () => {
             <Button 
               variant="outline" 
               size="icon"
-              className="border-ruby-red text-ruby-red hover:bg-ruby-red hover:text-white"
               onClick={() => handleScroll('right')}
             >
               <ChevronRight size={20} />

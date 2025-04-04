@@ -12,7 +12,6 @@ const LocationMap = () => {
         
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="h-96 w-full">
-            {/* Updated Google Maps URL */}
             <iframe 
               src="https://maps.app.goo.gl/UCK9EmfTDrvrJLnJ8"
               width="100%" 

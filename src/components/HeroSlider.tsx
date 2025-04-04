@@ -67,7 +67,7 @@ const HeroSlider = () => {
               <p className="font-poppins mb-8 text-lg md:text-xl opacity-90">
                 {slide.subtitle}
               </p>
-              <Button className="bg-gold hover:bg-gold-dark text-white border-2 border-gold hover:border-gold-dark px-8 py-6 text-lg rounded-none">
+              <Button className="px-8 py-6 text-lg rounded-none">
                 {slide.buttonText}
               </Button>
             </div>
@@ -99,7 +99,7 @@ const HeroSlider = () => {
           <button
             key={index}
             className={`h-2 w-2 md:h-3 md:w-3 rounded-full transition-all ${
-              index === currentIndex ? 'bg-gold w-8' : 'bg-white/60'
+              index === currentIndex ? 'bg-ruby-red w-8' : 'bg-white/60'
             }`}
             onClick={() => setCurrentIndex(index)}
           />
