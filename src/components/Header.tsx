@@ -38,9 +38,16 @@ const Header = () => {
           >
             <Menu size={24} />
           </Button>
-          <a href="/" className="text-2xl md:text-3xl font-bold font-playfair text-ruby-red">
-            Biswakarma
-            <span className="block text-sm md:text-base font-normal tracking-wider text-black">Jewellery Shilpalaya</span>
+          <a href="/" className="flex items-center">
+            <img 
+              src="https://d1h96izmtdkx5o.cloudfront.net/-O0Db23L67I9afe9SYhw.jpg?v=2" 
+              alt="Biswakarma Jewellery Logo" 
+              className="h-14 mr-3"
+            />
+            <div>
+              <span className="text-2xl md:text-3xl font-bold font-playfair text-ruby-red">Biswakarma</span>
+              <span className="block text-sm md:text-base font-normal tracking-wider text-black">Jewellery Shilpalaya</span>
+            </div>
           </a>
         </div>
 

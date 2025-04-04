@@ -9,7 +9,17 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="font-playfair text-xl font-bold mb-6 border-b border-ruby-red pb-3">About Us</h3>
+            <div className="flex items-center mb-6">
+              <img 
+                src="https://d1h96izmtdkx5o.cloudfront.net/-O0Db23L67I9afe9SYhw.jpg?v=2" 
+                alt="Biswakarma Jewellery Logo" 
+                className="h-16 mr-3"
+              />
+              <div>
+                <h3 className="font-playfair text-xl font-bold text-ruby-red">Biswakarma</h3>
+                <p className="text-sm text-gray-300">Jewellery Shilpalaya</p>
+              </div>
+            </div>
             <p className="text-gray-300 mb-4">
               Biswakarma Jewellery Shilpalaya has been crafting exquisite jewelry since 1978, blending tradition with modern design for pieces that transcend time.
             </p>

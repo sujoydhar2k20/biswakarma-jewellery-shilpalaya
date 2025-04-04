@@ -111,6 +111,9 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in 1.2s ease-out',
         'slide-in': 'slide-in 0.6s ease-out'
+      },
+      backgroundImage: {
+        'red-pink-gradient': 'linear-gradient(90deg, #E63946 0%, #D946EF 100%)'
       }
     }
   },

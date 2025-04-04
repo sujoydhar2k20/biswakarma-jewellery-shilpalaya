@@ -12,9 +12,9 @@ const LocationMap = () => {
         
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="h-96 w-full">
-            {/* Google Maps iframe - updated to point to Barasat, Kolkata */}
+            {/* Updated Google Maps URL */}
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29378.38542238767!2d88.46624071938475!3d22.72683345897139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f89faa58ddf84d%3A0x3bf7d3f2877c7423!2sSubhash%20Maidan!5e0!3m2!1sen!2sin!4v1712254840379!5m2!1sen!2sin"
+              src="https://maps.app.goo.gl/UCK9EmfTDrvrJLnJ8"
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
