@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -175,7 +174,8 @@ const FooterEditor = () => {
                         alt="Footer logo" 
                         className="h-16 mx-auto"
                         onError={(e) => {
-                          e.target.src = '/placeholder.svg';
+                          const img = e.target as HTMLImageElement;
+                          img.src = '/placeholder.svg';
                         }}
                       />
                     </div>
@@ -187,7 +187,8 @@ const FooterEditor = () => {
                       alt="Footer logo" 
                       className="h-16"
                       onError={(e) => {
-                        e.target.src = '/placeholder.svg';
+                        const img = e.target as HTMLImageElement;
+                        img.src = '/placeholder.svg';
                       }}
                     />
                   </div>
@@ -277,7 +278,6 @@ const FooterEditor = () => {
               ))}
             </div>
             
-            {/* Edit Social Link Modal */}
             {editingSocial && (
               <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <Card className="w-full max-w-md">
@@ -386,7 +386,6 @@ const FooterEditor = () => {
               ))}
             </div>
             
-            {/* Edit Quick Link Modal */}
             {editingQuickLink && (
               <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <Card className="w-full max-w-md">
@@ -479,7 +478,6 @@ const FooterEditor = () => {
               ))}
             </div>
             
-            {/* Edit Category Modal */}
             {editingCategory && (
               <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <Card className="w-full max-w-md">
@@ -622,7 +620,6 @@ const FooterEditor = () => {
               ))}
             </div>
             
-            {/* Edit Bottom Link Modal */}
             {editingBottomLink && (
               <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <Card className="w-full max-w-md">
