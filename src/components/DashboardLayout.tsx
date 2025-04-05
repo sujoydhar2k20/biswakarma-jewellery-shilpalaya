@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { 
   ChevronLeft, 
   Settings, 
@@ -14,9 +14,27 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
+import { toast } from "sonner";
 
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Check if user is authenticated
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    
+    if (!isAuthenticated) {
+      toast.error("Please login to access the dashboard");
+      navigate('/admin');
+    }
+  }, [navigate]);
+  
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    toast.success("Logged out successfully");
+    navigate('/admin');
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -97,6 +115,7 @@ const DashboardLayout = () => {
             <Button 
               variant="ghost" 
               className={`w-full justify-${collapsed ? 'center' : 'start'} text-gray-700 hover:bg-gray-100`}
+              onClick={handleLogout}
             >
               <LogOut className={`${collapsed ? '' : 'mr-3'}`} size={collapsed ? 24 : 20} />
               {!collapsed && <span>Logout</span>}

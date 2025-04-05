@@ -6,18 +6,37 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from 'lucide-react';
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // In a real app, you would authenticate with Supabase here
-    // For now, we'll just navigate to the dashboard
-    navigate('/dashboard');
+    setIsLoading(true);
+    
+    try {
+      // For now, use a hardcoded admin credential check
+      // In production, this should be replaced with proper authentication
+      if (email === 'admin@biswakarmagold.com' && password === 'Admin@123') {
+        // Store authentication state in localStorage
+        localStorage.setItem('isAuthenticated', 'true');
+        toast.success("Logged in successfully!");
+        navigate('/dashboard');
+      } else {
+        toast.error("Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -86,13 +105,20 @@ const Login = () => {
                 </a>
               </div>
               
-              <Button type="submit" className="w-full">
-                Sign In
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Signing in..." : "Sign In"}
               </Button>
               
-              <p className="text-center text-sm text-gray-500 mt-4">
-                Need help? Contact your administrator.
-              </p>
+              <div className="text-center mt-4">
+                <p className="text-sm text-gray-600">
+                  Default credentials: <br/>
+                  Email: admin@biswakarmagold.com <br/>
+                  Password: Admin@123
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  Need help? Contact your administrator.
+                </p>
+              </div>
             </div>
           </form>
         </Card>
