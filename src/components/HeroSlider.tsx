@@ -46,7 +46,7 @@ const HeroSlider = () => {
   }, []);
 
   return (
-    <div className="relative h-[60vh] md:h-[80vh] overflow-hidden bg-gray-100">
+    <div className="relative h-[65vh] md:h-[85vh] overflow-hidden">
       {slides.map((slide, index) => (
         <div
           key={slide.id}
@@ -54,20 +54,20 @@ const HeroSlider = () => {
             index === currentIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${slide.image})`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${slide.image})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
         >
           <div className="container mx-auto h-full flex items-center justify-center px-4">
-            <div className="text-center text-white animate-fade-in max-w-2xl">
-              <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+            <div className="text-center text-white animate-fade-in max-w-2xl backdrop-blur-sm bg-black/20 p-8 rounded-3xl shadow-2xl">
+              <h1 className="font-playfair text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gradient">
                 {slide.title}
               </h1>
-              <p className="font-poppins mb-8 text-lg md:text-xl opacity-90">
+              <p className="font-poppins mb-10 text-lg md:text-xl opacity-90">
                 {slide.subtitle}
               </p>
-              <Button className="px-8 py-6 text-lg rounded-none">
+              <Button size="lg" className="px-10 py-7 text-lg">
                 {slide.buttonText}
               </Button>
             </div>
@@ -79,27 +79,27 @@ const HeroSlider = () => {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 z-10"
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 z-10 h-12 w-12"
         onClick={goToPrev}
       >
-        <ChevronLeft size={24} />
+        <ChevronLeft size={28} />
       </Button>
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 z-10"
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 z-10 h-12 w-12"
         onClick={goToNext}
       >
-        <ChevronRight size={24} />
+        <ChevronRight size={28} />
       </Button>
 
       {/* Indicator dots */}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2">
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3">
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`h-2 w-2 md:h-3 md:w-3 rounded-full transition-all ${
-              index === currentIndex ? 'bg-ruby-red w-8' : 'bg-white/60'
+            className={`h-3 md:h-4 transition-all ${
+              index === currentIndex ? 'bg-red-pink-gradient w-10 rounded-full' : 'bg-white/70 w-3 md:w-4 rounded-full hover:bg-white'
             }`}
             onClick={() => setCurrentIndex(index)}
           />

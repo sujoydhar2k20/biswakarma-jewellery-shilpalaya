@@ -114,4 +114,8 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent;
+  }
 }

@@ -1,3 +1,4 @@
+
 import { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -61,12 +62,12 @@ const CategoryCarousel = () => {
   const filteredCategories = categories.filter(cat => cat.type === activeType);
   
   return (
-    <section className="py-16 bg-cream">
+    <section className="py-20 bg-gradient-to-b from-cream to-white">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-          <h2 className="text-3xl md:text-4xl font-playfair font-bold text-center md:text-left">Our <span className="text-ruby-red">Collections</span></h2>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+          <h2 className="text-3xl md:text-5xl font-playfair font-bold text-center md:text-left">Our <span className="text-ruby-red">Collections</span></h2>
           
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-3">
             {categoryTypes.map((type) => (
               <Button 
                 key={type.id}
@@ -79,7 +80,7 @@ const CategoryCarousel = () => {
             ))}
           </div>
           
-          <div className="flex space-x-2">
+          <div className="flex space-x-3">
             <Button 
               variant="outline" 
               size="icon" 
@@ -100,7 +101,7 @@ const CategoryCarousel = () => {
         <div className="relative overflow-hidden">
           <div 
             ref={containerRef}
-            className="flex gap-4 overflow-x-auto pb-6 scroll-smooth hide-scrollbar"
+            className="flex gap-6 overflow-x-auto pb-8 scroll-smooth hide-scrollbar"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {filteredCategories.map((category) => (
@@ -109,14 +110,14 @@ const CategoryCarousel = () => {
                 key={category.id}
                 className="flex-shrink-0 group"
               >
-                <div className="relative w-48 h-48 overflow-hidden rounded-lg shadow-md">
+                <div className="relative w-56 h-56 overflow-hidden rounded-2xl shadow-lg transform transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-xl">
                   <img 
                     src={category.image} 
                     alt={category.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent group-hover:from-ruby-red/80 transition-colors flex items-end justify-center">
-                    <span className="text-white font-medium text-lg font-playfair p-4 text-center">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-ruby-red/90 transition-colors flex items-end justify-center">
+                    <span className="text-white font-medium text-lg font-playfair p-5 text-center">
                       {category.name}
                     </span>
                   </div>
