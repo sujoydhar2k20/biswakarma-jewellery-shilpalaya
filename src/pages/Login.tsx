@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import WhatsAppButton from "../components/WhatsAppButton";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +15,14 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  
+  // Check if user is already authenticated
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -123,6 +131,7 @@ const Login = () => {
           </form>
         </Card>
       </div>
+      <WhatsAppButton />
     </div>
   );
 };
