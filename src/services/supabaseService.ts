@@ -1,14 +1,26 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import {
+  HeroBanner,
+  Collection,
+  FeaturedCollection,
+  Testimonial,
+  AboutSection,
+  AboutFeature,
+  FooterContent,
+  PaymentMethod,
+  PaymentSection,
+  Review
+} from "@/types/supabase";
 
 // Hero Banners
-export async function fetchHeroBanners() {
+export async function fetchHeroBanners(): Promise<HeroBanner[]> {
   try {
     const { data, error } = await supabase
       .from('hero_banners')
       .select('*')
-      .order('display_order', { ascending: true });
+      .order('display_order', { ascending: true }) as { data: HeroBanner[] | null, error: any };
     
     if (error) throw error;
     return data || [];
@@ -18,7 +30,7 @@ export async function fetchHeroBanners() {
   }
 }
 
-export async function saveHeroBanner(banner) {
+export async function saveHeroBanner(banner: Partial<HeroBanner>): Promise<HeroBanner[]> {
   try {
     let imageUrl = banner.imageUrl;
     
@@ -57,7 +69,7 @@ export async function saveHeroBanner(banner) {
           button_link: banner.buttonLink,
           display_order: banner.display_order || 0,
           updated_at: new Date().toISOString()
-        })
+        } as Partial<HeroBanner>)
         .eq('id', existingBannerId);
       
       if (error) throw error;
@@ -72,7 +84,7 @@ export async function saveHeroBanner(banner) {
           button_text: banner.buttonText,
           button_link: banner.buttonLink,
           display_order: banner.display_order || 0
-        });
+        } as Partial<HeroBanner>);
       
       if (error) throw error;
       toast.success('Banner added successfully');
@@ -86,7 +98,7 @@ export async function saveHeroBanner(banner) {
   }
 }
 
-export async function deleteHeroBanner(bannerId) {
+export async function deleteHeroBanner(bannerId: string): Promise<HeroBanner[]> {
   try {
     const { error } = await supabase
       .from('hero_banners')
@@ -105,12 +117,12 @@ export async function deleteHeroBanner(bannerId) {
 }
 
 // Collections
-export async function fetchCollections() {
+export async function fetchCollections(): Promise<Collection[]> {
   try {
     const { data, error } = await supabase
       .from('collections')
       .select('*')
-      .order('display_order', { ascending: true });
+      .order('display_order', { ascending: true }) as { data: Collection[] | null, error: any };
     
     if (error) throw error;
     return data || [];
@@ -120,7 +132,7 @@ export async function fetchCollections() {
   }
 }
 
-export async function saveCollection(collection) {
+export async function saveCollection(collection: any): Promise<Collection[]> {
   try {
     let imageUrl = collection.image;
     
@@ -158,7 +170,7 @@ export async function saveCollection(collection) {
           type: collection.type,
           display_order: collection.display_order || 0,
           updated_at: new Date().toISOString()
-        })
+        } as Partial<Collection>)
         .eq('id', existingId);
       
       if (error) throw error;
@@ -172,7 +184,7 @@ export async function saveCollection(collection) {
           link: collection.link,
           type: collection.type,
           display_order: collection.display_order || 0
-        });
+        } as Partial<Collection>);
       
       if (error) throw error;
       toast.success('Collection added successfully');
@@ -186,7 +198,7 @@ export async function saveCollection(collection) {
   }
 }
 
-export async function deleteCollection(collectionId) {
+export async function deleteCollection(collectionId: string): Promise<Collection[]> {
   try {
     const { error } = await supabase
       .from('collections')
@@ -205,12 +217,12 @@ export async function deleteCollection(collectionId) {
 }
 
 // Featured Collections
-export async function fetchFeaturedCollections() {
+export async function fetchFeaturedCollections(): Promise<FeaturedCollection[]> {
   try {
     const { data, error } = await supabase
       .from('featured_collections')
       .select('*')
-      .order('display_order', { ascending: true });
+      .order('display_order', { ascending: true }) as { data: FeaturedCollection[] | null, error: any };
     
     if (error) throw error;
     return data || [];
@@ -220,7 +232,7 @@ export async function fetchFeaturedCollections() {
   }
 }
 
-export async function saveFeaturedCollection(collection) {
+export async function saveFeaturedCollection(collection: any): Promise<FeaturedCollection[]> {
   try {
     let imageUrl = collection.image;
     
@@ -258,7 +270,7 @@ export async function saveFeaturedCollection(collection) {
           category: collection.category,
           display_order: collection.display_order || 0,
           updated_at: new Date().toISOString()
-        })
+        } as Partial<FeaturedCollection>)
         .eq('id', existingId);
       
       if (error) throw error;
@@ -272,7 +284,7 @@ export async function saveFeaturedCollection(collection) {
           image: imageUrl,
           category: collection.category,
           display_order: collection.display_order || 0
-        });
+        } as Partial<FeaturedCollection>);
       
       if (error) throw error;
       toast.success('Featured collection added successfully');
@@ -286,7 +298,7 @@ export async function saveFeaturedCollection(collection) {
   }
 }
 
-export async function deleteFeaturedCollection(collectionId) {
+export async function deleteFeaturedCollection(collectionId: string): Promise<FeaturedCollection[]> {
   try {
     const { error } = await supabase
       .from('featured_collections')
@@ -305,12 +317,12 @@ export async function deleteFeaturedCollection(collectionId) {
 }
 
 // Testimonials
-export async function fetchTestimonials() {
+export async function fetchTestimonials(): Promise<Testimonial[]> {
   try {
     const { data, error } = await supabase
       .from('testimonials')
       .select('*')
-      .order('display_order', { ascending: true });
+      .order('display_order', { ascending: true }) as { data: Testimonial[] | null, error: any };
     
     if (error) throw error;
     return data || [];
@@ -320,7 +332,7 @@ export async function fetchTestimonials() {
   }
 }
 
-export async function saveTestimonial(testimonial) {
+export async function saveTestimonial(testimonial: any): Promise<Testimonial[]> {
   try {
     let imageUrl = testimonial.image;
     
@@ -358,7 +370,7 @@ export async function saveTestimonial(testimonial) {
           image: imageUrl,
           display_order: testimonial.display_order || 0,
           updated_at: new Date().toISOString()
-        })
+        } as Partial<Testimonial>)
         .eq('id', existingId);
       
       if (error) throw error;
@@ -372,7 +384,7 @@ export async function saveTestimonial(testimonial) {
           content: testimonial.content,
           image: imageUrl,
           display_order: testimonial.display_order || 0
-        });
+        } as Partial<Testimonial>);
       
       if (error) throw error;
       toast.success('Testimonial added successfully');
@@ -386,7 +398,7 @@ export async function saveTestimonial(testimonial) {
   }
 }
 
-export async function deleteTestimonial(testimonialId) {
+export async function deleteTestimonial(testimonialId: string): Promise<Testimonial[]> {
   try {
     const { error } = await supabase
       .from('testimonials')
@@ -405,11 +417,11 @@ export async function deleteTestimonial(testimonialId) {
 }
 
 // About Section
-export async function fetchAboutSection() {
+export async function fetchAboutSection(): Promise<AboutSection | null> {
   try {
     const { data, error } = await supabase
       .from('about_section')
-      .select('*, about_features(*)');
+      .select('*, about_features(*)') as { data: (AboutSection & { about_features: AboutFeature[] })[] | null, error: any };
     
     if (error) throw error;
     return data?.[0] || null;
@@ -419,7 +431,7 @@ export async function fetchAboutSection() {
   }
 }
 
-export async function saveAboutSection(aboutData) {
+export async function saveAboutSection(aboutData: any): Promise<AboutSection | null> {
   try {
     let imageUrl = aboutData.image;
     
@@ -447,9 +459,9 @@ export async function saveAboutSection(aboutData) {
     // Check if an about section already exists
     const { data: existingData } = await supabase
       .from('about_section')
-      .select('id');
+      .select('id') as { data: Pick<AboutSection, 'id'>[] | null };
     
-    let aboutId;
+    let aboutId: string;
     
     if (existingData && existingData.length > 0) {
       // Update existing record
@@ -462,7 +474,7 @@ export async function saveAboutSection(aboutData) {
           image: imageUrl,
           years_experience: aboutData.yearsExperience,
           updated_at: new Date().toISOString()
-        })
+        } as Partial<AboutSection>)
         .eq('id', existingData[0].id);
       
       if (error) throw error;
@@ -478,7 +490,7 @@ export async function saveAboutSection(aboutData) {
           description2: aboutData.description2,
           image: imageUrl,
           years_experience: aboutData.yearsExperience
-        })
+        } as Partial<AboutSection>)
         .select();
       
       if (error) throw error;
@@ -495,7 +507,7 @@ export async function saveAboutSection(aboutData) {
         .eq('about_id', aboutId);
       
       // Insert new features
-      const featuresWithAboutId = aboutData.features.map((feature, index) => ({
+      const featuresWithAboutId = aboutData.features.map((feature: any, index: number) => ({
         title: feature.title,
         description: feature.description,
         icon: feature.icon,
@@ -505,7 +517,7 @@ export async function saveAboutSection(aboutData) {
       
       const { error: featuresError } = await supabase
         .from('about_features')
-        .insert(featuresWithAboutId);
+        .insert(featuresWithAboutId as Partial<AboutFeature>[]);
       
       if (featuresError) throw featuresError;
     }
@@ -519,16 +531,16 @@ export async function saveAboutSection(aboutData) {
 }
 
 // Footer Content
-export async function fetchFooterContent() {
+export async function fetchFooterContent(): Promise<Record<string, any>> {
   try {
     const { data, error } = await supabase
       .from('footer_content')
-      .select('*');
+      .select('*') as { data: FooterContent[] | null, error: any };
     
     if (error) throw error;
     
     // Convert to expected format
-    const footerData = {};
+    const footerData: Record<string, any> = {};
     if (data && data.length > 0) {
       data.forEach(item => {
         footerData[item.section] = item.content;
@@ -542,13 +554,13 @@ export async function fetchFooterContent() {
   }
 }
 
-export async function saveFooterContent(section, content) {
+export async function saveFooterContent(section: string, content: any): Promise<Record<string, any>> {
   try {
     // Check if section already exists
     const { data: existingData } = await supabase
       .from('footer_content')
       .select('id')
-      .eq('section', section);
+      .eq('section', section) as { data: Pick<FooterContent, 'id'>[] | null };
     
     if (existingData && existingData.length > 0) {
       // Update existing record
@@ -557,7 +569,7 @@ export async function saveFooterContent(section, content) {
         .update({
           content,
           updated_at: new Date().toISOString()
-        })
+        } as Partial<FooterContent>)
         .eq('id', existingData[0].id);
       
       if (error) throw error;
@@ -568,7 +580,7 @@ export async function saveFooterContent(section, content) {
         .insert({
           section,
           content
-        });
+        } as Partial<FooterContent>);
       
       if (error) throw error;
     }
@@ -583,7 +595,7 @@ export async function saveFooterContent(section, content) {
 }
 
 // Helper function for file uploads
-export async function uploadFile(file, path) {
+export async function uploadFile(file: File, path: string): Promise<string | null> {
   try {
     if (!file) return null;
     
@@ -611,7 +623,7 @@ export async function uploadFile(file, path) {
 }
 
 // Export helper for cPanel
-export async function exportWebsiteData() {
+export async function exportWebsiteData(): Promise<boolean> {
   try {
     // Fetch all data
     const banners = await fetchHeroBanners();

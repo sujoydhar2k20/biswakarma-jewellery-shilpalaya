@@ -7,13 +7,25 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, X, Plus, ArrowUp, ArrowDown, Loader2 } from "lucide-react";
 import { fetchHeroBanners, saveHeroBanner, deleteHeroBanner } from "@/services/supabaseService";
+import { HeroBanner } from '@/types/supabase';
+
+interface EditorBanner {
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  imageUrl?: string | null;
+  imagePreview?: string | null;
+  buttonText?: string | null;
+  buttonLink?: string | null;
+  display_order: number;
+}
 
 const BannerEditor = () => {
-  const [banners, setBanners] = useState([]);
-  const [editingBanner, setEditingBanner] = useState(null);
+  const [banners, setBanners] = useState<EditorBanner[]>([]);
+  const [editingBanner, setEditingBanner] = useState<EditorBanner | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadBanners();
@@ -43,7 +55,7 @@ const BannerEditor = () => {
     }
   };
 
-  const handleEditBanner = (banner) => {
+  const handleEditBanner = (banner: EditorBanner) => {
     setEditingBanner({...banner});
   };
 
@@ -86,7 +98,7 @@ const BannerEditor = () => {
     }
   };
 
-  const handleDeleteBanner = async (id) => {
+  const handleDeleteBanner = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this banner?")) {
       try {
         const updatedBanners = await deleteHeroBanner(id);
@@ -109,7 +121,7 @@ const BannerEditor = () => {
     }
   };
 
-  const moveBanner = async (id, direction) => {
+  const moveBanner = async (id: string, direction: 'up' | 'down') => {
     const index = banners.findIndex(banner => banner.id === id);
     if ((direction === 'up' && index > 0) || (direction === 'down' && index < banners.length - 1)) {
       const newBanners = [...banners];
@@ -135,15 +147,15 @@ const BannerEditor = () => {
     }
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && editingBanner) {
       // Store the actual file object for later upload
-      setEditingBanner({...editingBanner, imageUrl: file});
+      setEditingBanner({...editingBanner, imageUrl: file as unknown as string});
       
       // Also create a preview URL for display
       const previewUrl = URL.createObjectURL(file);
-      setEditingBanner({...editingBanner, imageUrl: file, imagePreview: previewUrl});
+      setEditingBanner({...editingBanner, imageUrl: file as unknown as string, imagePreview: previewUrl});
     }
   };
 
@@ -260,7 +272,7 @@ const BannerEditor = () => {
                     {(editingBanner.imageUrl || editingBanner.imagePreview) ? (
                       <div className="relative">
                         <img 
-                          src={editingBanner.imagePreview || editingBanner.imageUrl} 
+                          src={editingBanner.imagePreview || editingBanner.imageUrl || ""} 
                           alt="Banner preview"
                           className="mx-auto max-h-40 object-contain"
                         />
@@ -314,7 +326,7 @@ const BannerEditor = () => {
                   <Label htmlFor="banner-subtitle">Subtitle</Label>
                   <Textarea 
                     id="banner-subtitle" 
-                    value={editingBanner.subtitle} 
+                    value={editingBanner.subtitle || ""} 
                     onChange={(e) => setEditingBanner({...editingBanner, subtitle: e.target.value})}
                     className="mt-1"
                   />
@@ -325,7 +337,7 @@ const BannerEditor = () => {
                     <Label htmlFor="banner-button-text">Button Text</Label>
                     <Input 
                       id="banner-button-text" 
-                      value={editingBanner.buttonText} 
+                      value={editingBanner.buttonText || ""} 
                       onChange={(e) => setEditingBanner({...editingBanner, buttonText: e.target.value})}
                       className="mt-1"
                     />
@@ -335,7 +347,7 @@ const BannerEditor = () => {
                     <Label htmlFor="banner-button-link">Button Link</Label>
                     <Input 
                       id="banner-button-link" 
-                      value={editingBanner.buttonLink} 
+                      value={editingBanner.buttonLink || ""} 
                       onChange={(e) => setEditingBanner({...editingBanner, buttonLink: e.target.value})}
                       className="mt-1"
                     />

@@ -1,14 +1,40 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { fetchHeroBanners, fetchCollections, fetchFeaturedCollections, fetchTestimonials, fetchAboutSection, fetchFooterContent } from '@/services/supabaseService';
+import { 
+  fetchHeroBanners, 
+  fetchCollections, 
+  fetchFeaturedCollections, 
+  fetchTestimonials, 
+  fetchAboutSection, 
+  fetchFooterContent
+} from '@/services/supabaseService';
+import {
+  HeroBanner,
+  Collection,
+  FeaturedCollection,
+  Testimonial,
+  AboutSection,
+  FooterContent
+} from '@/types/supabase';
 
-// Create context
-const DataContext = createContext(null);
+interface DataContextType {
+  heroBanners: HeroBanner[];
+  collections: Collection[];
+  featuredCollections: FeaturedCollection[];
+  testimonials: Testimonial[];
+  aboutSection: AboutSection | null;
+  footerContent: Record<string, any>;
+  isLoading: boolean;
+  refreshData: () => Promise<void>;
+}
+
+// Create context with a default value
+const DataContext = createContext<DataContextType | null>(null);
 
 // Data provider component
-export const DataProvider = ({ children }) => {
+export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState({
+  const [data, setData] = useState<Omit<DataContextType, 'isLoading' | 'refreshData'>>({
     heroBanners: [],
     collections: [],
     featuredCollections: [],
@@ -64,12 +90,10 @@ export const DataProvider = ({ children }) => {
 };
 
 // Custom hook for using the data context
-export const useData = () => {
+export const useData = (): DataContextType => {
   const context = useContext(DataContext);
   if (!context) {
     throw new Error('useData must be used within a DataProvider');
   }
   return context;
 };
-
-// Wrap the App with this provider in the root component

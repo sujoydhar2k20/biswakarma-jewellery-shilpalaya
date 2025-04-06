@@ -3,48 +3,76 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchHeroBanners } from '@/services/supabaseService';
+import { HeroBanner } from '@/types/supabase';
+import { useData } from '@/contexts/DataContext';
 
 const defaultSlides = [
   {
-    id: 1,
+    id: "1",
     title: "Elegant Diamond Collection",
     subtitle: "Timeless beauty crafted with precision",
     buttonText: "Explore Collection",
-    imageUrl: '/placeholder.svg'
+    imageUrl: '/placeholder.svg',
+    buttonLink: "#"
   }
 ];
 
+interface FormattedSlide {
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  buttonText?: string | null;
+  buttonLink?: string | null;
+  imageUrl?: string | null;
+}
+
 const HeroSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [slides, setSlides] = useState(defaultSlides);
+  const [slides, setSlides] = useState<FormattedSlide[]>(defaultSlides);
   const [loading, setLoading] = useState(true);
+  const { heroBanners } = useData();
 
   useEffect(() => {
-    const loadSlides = async () => {
-      try {
-        const data = await fetchHeroBanners();
-        if (data && data.length > 0) {
-          // Transform data format
-          const formattedSlides = data.map(item => ({
-            id: item.id,
-            title: item.title,
-            subtitle: item.subtitle,
-            buttonText: item.button_text,
-            buttonLink: item.button_link,
-            imageUrl: item.image_url
-          }));
-          
-          setSlides(formattedSlides);
-        }
-      } catch (error) {
-        console.error('Error loading hero slides:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (heroBanners && heroBanners.length > 0) {
+      // Transform data format
+      const formattedSlides: FormattedSlide[] = heroBanners.map((item: HeroBanner) => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.subtitle,
+        buttonText: item.button_text,
+        buttonLink: item.button_link,
+        imageUrl: item.image_url
+      }));
+      
+      setSlides(formattedSlides);
+      setLoading(false);
+    } else {
+      loadSlides();
+    }
+  }, [heroBanners]);
 
-    loadSlides();
-  }, []);
+  const loadSlides = async () => {
+    try {
+      const data = await fetchHeroBanners();
+      if (data && data.length > 0) {
+        // Transform data format
+        const formattedSlides = data.map(item => ({
+          id: item.id,
+          title: item.title,
+          subtitle: item.subtitle,
+          buttonText: item.button_text,
+          buttonLink: item.button_link,
+          imageUrl: item.image_url
+        }));
+        
+        setSlides(formattedSlides);
+      }
+    } catch (error) {
+      console.error('Error loading hero slides:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const goToNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
