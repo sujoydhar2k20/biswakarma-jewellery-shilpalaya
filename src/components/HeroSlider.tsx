@@ -2,9 +2,12 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchHeroBanners } from '@/services/supabaseService';
+import { fetchHeroBanners } from '@/services/bannerService'; // Updated import
 import { HeroBanner } from '@/types/supabase';
 import { useData } from '@/contexts/DataContext';
+
+// Default fallback image
+const DEFAULT_IMAGE_URL = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1920&auto=format";
 
 const defaultSlides = [
   {
@@ -12,7 +15,7 @@ const defaultSlides = [
     title: "Elegant Diamond Collection",
     subtitle: "Timeless beauty crafted with precision",
     button_text: "Explore Collection",
-    image_url: '/placeholder.svg',
+    image_url: DEFAULT_IMAGE_URL,
     button_link: "#"
   }
 ];
@@ -34,6 +37,7 @@ const HeroSlider = () => {
 
   useEffect(() => {
     if (heroBanners && heroBanners.length > 0) {
+      console.log("Using data from context:", heroBanners);
       // Transform data format
       const formattedSlides: FormattedSlide[] = heroBanners.map((item: HeroBanner) => ({
         id: item.id,
@@ -41,7 +45,7 @@ const HeroSlider = () => {
         subtitle: item.subtitle,
         button_text: item.button_text,
         button_link: item.button_link,
-        image_url: item.image_url
+        image_url: item.image_url || DEFAULT_IMAGE_URL // Use default image if null
       }));
       
       setSlides(formattedSlides);
@@ -53,6 +57,7 @@ const HeroSlider = () => {
 
   const loadSlides = async () => {
     try {
+      console.log("Fetching banners directly");
       const data = await fetchHeroBanners();
       if (data && data.length > 0) {
         // Transform data format
@@ -62,7 +67,7 @@ const HeroSlider = () => {
           subtitle: item.subtitle,
           button_text: item.button_text,
           button_link: item.button_link,
-          image_url: item.image_url
+          image_url: item.image_url || DEFAULT_IMAGE_URL // Use default image if null
         }));
         
         setSlides(formattedSlides);
@@ -108,7 +113,7 @@ const HeroSlider = () => {
             index === currentIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${slide.image_url || '/placeholder.svg'})`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${slide.image_url})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -121,9 +126,11 @@ const HeroSlider = () => {
               <p className="font-poppins mb-10 text-lg md:text-xl opacity-90">
                 {slide.subtitle}
               </p>
-              <Button size="lg" className="px-10 py-7 text-lg">
-                {slide.button_text}
-              </Button>
+              {slide.button_text && (
+                <Button size="lg" className="px-10 py-7 text-lg">
+                  {slide.button_text}
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -136,7 +143,7 @@ const HeroSlider = () => {
             variant="ghost"
             size="icon"
             className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 z-10 h-12 w-12"
-            onClick={goToPrev}
+            onClick={() => setCurrentIndex((prevIndex) => (prevIndex === 0 ? slides.length - 1 : prevIndex - 1))}
           >
             <ChevronLeft size={28} />
           </Button>
@@ -144,7 +151,7 @@ const HeroSlider = () => {
             variant="ghost"
             size="icon"
             className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 z-10 h-12 w-12"
-            onClick={goToNext}
+            onClick={() => setCurrentIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1))}
           >
             <ChevronRight size={28} />
           </Button>
