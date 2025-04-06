@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -50,19 +49,22 @@ export async function saveHeroBanner(banner: Partial<HeroBanner> & { imagePrevie
         const fileExt = file.name ? file.name.split('.').pop() : 'jpg';
         const fileName = `banner-${Date.now()}.${fileExt}`;
         
-        const { data: uploadData, error: uploadError } = await supabase
-          .storage
-          .from('website_images')
-          .upload(`banners/${fileName}`, file);
-        
-        if (uploadError) throw uploadError;
-        
-        const { data } = supabase
-          .storage
-          .from('website_images')
-          .getPublicUrl(`banners/${fileName}`);
-        
-        image_url = data.publicUrl;
+        // Ensure banner.image_url is not null before proceeding with upload
+        if (banner.image_url) {
+          const { data: uploadData, error: uploadError } = await supabase
+            .storage
+            .from('website_images')
+            .upload(`banners/${fileName}`, file);
+          
+          if (uploadError) throw uploadError;
+          
+          const { data } = supabase
+            .storage
+            .from('website_images')
+            .getPublicUrl(`banners/${fileName}`);
+          
+          image_url = data.publicUrl;
+        }
       }
     }
     
