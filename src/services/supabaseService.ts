@@ -34,25 +34,28 @@ export async function saveHeroBanner(banner: Partial<HeroBanner> & { imagePrevie
   try {
     let image_url = banner.image_url;
     
-    // If the image is a Blob/File, upload it to storage
-    if (typeof banner.image_url === 'object' && banner.image_url instanceof File) {
-      const file = banner.image_url;
-      const fileExt = file.name.split('.').pop();
-      const fileName = `banner-${Date.now()}.${fileExt}`;
-      
-      const { data: uploadData, error: uploadError } = await supabase
-        .storage
-        .from('website_images')
-        .upload(`banners/${fileName}`, file);
-      
-      if (uploadError) throw uploadError;
-      
-      const { data } = supabase
-        .storage
-        .from('website_images')
-        .getPublicUrl(`banners/${fileName}`);
-      
-      image_url = data.publicUrl;
+    // If the image is a File object, upload it to storage
+    // Check if image_url exists and is a File object
+    if (banner.image_url && typeof banner.image_url === 'object' && 'name' in banner.image_url && 'size' in banner.image_url) {
+      const file = banner.image_url as File;
+      if (file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `banner-${Date.now()}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase
+          .storage
+          .from('website_images')
+          .upload(`banners/${fileName}`, file);
+        
+        if (uploadError) throw uploadError;
+        
+        const { data } = supabase
+          .storage
+          .from('website_images')
+          .getPublicUrl(`banners/${fileName}`);
+        
+        image_url = data.publicUrl;
+      }
     }
     
     // Determine if we're updating or inserting
@@ -62,7 +65,7 @@ export async function saveHeroBanner(banner: Partial<HeroBanner> & { imagePrevie
       const { error } = await supabase
         .from('hero_banners')
         .update({
-          title: banner.title,
+          title: banner.title || '',
           subtitle: banner.subtitle,
           image_url: image_url,
           button_text: banner.button_text,
