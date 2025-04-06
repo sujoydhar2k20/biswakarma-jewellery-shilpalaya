@@ -26,16 +26,12 @@ export async function saveHeroBanner(banner: Partial<HeroBanner> & { imagePrevie
   try {
     let image_url = banner.image_url;
     
-    // If the image is a File object, upload it to storage
     // Check if image_url exists and is a File object
     if (banner.image_url && 
-        typeof banner.image_url === 'object' && 
-        banner.image_url !== null) {
+        typeof banner.image_url === 'object') {
       
       // Type guard to check if it's a File
-      const isFile = 'name' in banner.image_url && 'size' in banner.image_url;
-      
-      if (isFile) {
+      if (banner.image_url !== null && 'name' in banner.image_url && 'size' in banner.image_url) {
         // Safe type assertion after check
         const file = banner.image_url as File;
         
