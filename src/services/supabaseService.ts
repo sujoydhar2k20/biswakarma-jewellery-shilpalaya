@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -36,7 +35,11 @@ export async function saveHeroBanner(banner: Partial<HeroBanner> & { imagePrevie
     
     // If the image is a File object, upload it to storage
     // Check if image_url exists and is a File object
-    if (banner.image_url && typeof banner.image_url === 'object' && 'name' in banner.image_url && 'size' in banner.image_url) {
+    if (banner.image_url && 
+        typeof banner.image_url === 'object' && 
+        banner.image_url !== null &&
+        'name' in banner.image_url && 
+        'size' in banner.image_url) {
       const file = banner.image_url as File;
       if (file) {
         const fileExt = file.name.split('.').pop();
