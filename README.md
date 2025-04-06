@@ -1,73 +1,66 @@
-# Welcome to your BJS project
 
-## Project info
+# Website CMS with cPanel Hosting Guide
 
-**URL**: https://lovable.dev/projects/186b9b45-9c7e-4b20-b747-f544819ced9f
+This repository contains a React-based jewelry website with a complete content management system (CMS) built with Supabase as the backend. This document provides instructions on how to export your website data and host it on cPanel.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- Complete CMS dashboard with authentication
+- Manage hero banners, collections, featured items, testimonials and more
+- Export functionality for easy migration to any hosting environment
+- Integrated with Supabase for data storage and file management
 
-**Use Lovable**
+## Exporting Data for cPanel Hosting
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/186b9b45-9c7e-4b20-b747-f544819ced9f) and start prompting.
+1. Navigate to the Export page in the dashboard
+2. Click the "Export Website Data" button to download a JSON file containing all your website data
+3. This file will be used to import your data into a new hosting environment
 
-Changes made via Lovable will be committed automatically to this repo.
+## Setting up on cPanel Hosting
 
-**Use your preferred IDE**
+### Step 1: Prepare Your Environment
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. Sign in to your cPanel account
+2. Create a new database from MySQL Databases
+3. Create or assign a user to the database with all privileges
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Step 2: Upload Files
 
-Follow these steps:
+1. Navigate to File Manager in cPanel
+2. Go to the public_html directory (or a subdirectory if you're not hosting on the root domain)
+3. Upload the build files of your React application
+   - If you have a ZIP file, upload it and then extract it
+4. Create a `.env` file with your database credentials and Supabase configuration
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Step 3: Configure PHP and Database
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. Go to phpMyAdmin in cPanel
+2. Select the database you created
+3. Click on the Import tab
+4. Upload and import your database schema
+5. Upload your exported JSON data using the import functionality
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Step 4: Configure Supabase
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+1. Create a Supabase project if you haven't already
+2. Set up the same tables and structures as in the exported data
+3. Update the Supabase URL and API key in your application configuration
 
-**Edit a file directly in GitHub**
+### Step 5: Test Your Website
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Open your website URL
+2. Verify that all content is loading correctly
+3. Check the admin section to ensure you can log in and manage content
 
-**Use GitHub Codespaces**
+## Troubleshooting
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+If you encounter issues with your cPanel hosting:
 
-## What technologies are used for this project?
+1. Check the server error logs in cPanel
+2. Verify that all database connections are properly configured
+3. Ensure that file permissions are set correctly (typically 755 for directories and 644 for files)
+4. Confirm that your .htaccess file is properly configured for a React single-page application
 
-This project is built with:
+## Support
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/186b9b45-9c7e-4b20-b747-f544819ced9f) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes it is!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+If you need further assistance, please contact our support team at support@example.com.

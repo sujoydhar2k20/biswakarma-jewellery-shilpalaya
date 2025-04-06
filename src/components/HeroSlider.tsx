@@ -1,34 +1,50 @@
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { fetchHeroBanners } from '@/services/supabaseService';
 
-const slides = [
+const defaultSlides = [
   {
     id: 1,
-    image: '/placeholder.svg',
     title: "Elegant Diamond Collection",
     subtitle: "Timeless beauty crafted with precision",
-    buttonText: "Explore Collection"
-  },
-  {
-    id: 2,
-    image: '/placeholder.svg',
-    title: "Gold Wedding Jewelry",
-    subtitle: "Make your special day unforgettable",
-    buttonText: "View Bridal Sets"
-  },
-  {
-    id: 3,
-    image: '/placeholder.svg',
-    title: "Gemstone Masterpieces",
-    subtitle: "Rare and exquisite colored stones",
-    buttonText: "Discover Now"
+    buttonText: "Explore Collection",
+    imageUrl: '/placeholder.svg'
   }
 ];
 
 const HeroSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [slides, setSlides] = useState(defaultSlides);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadSlides = async () => {
+      try {
+        const data = await fetchHeroBanners();
+        if (data && data.length > 0) {
+          // Transform data format
+          const formattedSlides = data.map(item => ({
+            id: item.id,
+            title: item.title,
+            subtitle: item.subtitle,
+            buttonText: item.button_text,
+            buttonLink: item.button_link,
+            imageUrl: item.image_url
+          }));
+          
+          setSlides(formattedSlides);
+        }
+      } catch (error) {
+        console.error('Error loading hero slides:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSlides();
+  }, []);
 
   const goToNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
@@ -39,11 +55,21 @@ const HeroSlider = () => {
   };
 
   useEffect(() => {
+    if (slides.length <= 1) return;
+    
     const timer = setInterval(() => {
       goToNext();
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[65vh] bg-gray-100">
+        <Loader2 className="h-12 w-12 animate-spin text-gray-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-[65vh] md:h-[85vh] overflow-hidden">
@@ -54,7 +80,7 @@ const HeroSlider = () => {
             index === currentIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${slide.image})`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${slide.imageUrl || '/placeholder.svg'})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -76,35 +102,39 @@ const HeroSlider = () => {
       ))}
 
       {/* Navigation arrows */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 z-10 h-12 w-12"
-        onClick={goToPrev}
-      >
-        <ChevronLeft size={28} />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 z-10 h-12 w-12"
-        onClick={goToNext}
-      >
-        <ChevronRight size={28} />
-      </Button>
+      {slides.length > 1 && (
+        <>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 z-10 h-12 w-12"
+            onClick={goToPrev}
+          >
+            <ChevronLeft size={28} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 z-10 h-12 w-12"
+            onClick={goToNext}
+          >
+            <ChevronRight size={28} />
+          </Button>
 
-      {/* Indicator dots */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            className={`h-3 md:h-4 transition-all ${
-              index === currentIndex ? 'bg-red-pink-gradient w-10 rounded-full' : 'bg-white/70 w-3 md:w-4 rounded-full hover:bg-white'
-            }`}
-            onClick={() => setCurrentIndex(index)}
-          />
-        ))}
-      </div>
+          {/* Indicator dots */}
+          <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                className={`h-3 md:h-4 transition-all ${
+                  index === currentIndex ? 'bg-red-pink-gradient w-10 rounded-full' : 'bg-white/70 w-3 md:w-4 rounded-full hover:bg-white'
+                }`}
+                onClick={() => setCurrentIndex(index)}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -10,7 +10,8 @@ import {
   FileText, 
   Users, 
   MessageSquare, 
-  LogOut
+  LogOut,
+  Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
@@ -80,27 +81,33 @@ const DashboardLayout = () => {
               </a>
             </li>
             <li>
-              <a href="/dashboard/products" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
+              <a href="/dashboard/collections" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
                 <ShoppingBag className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={collapsed ? 24 : 20} />
-                {!collapsed && <span>Products</span>}
+                {!collapsed && <span>Collections</span>}
               </a>
             </li>
             <li>
-              <a href="/dashboard/content" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
+              <a href="/dashboard/featured" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
                 <FileText className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={collapsed ? 24 : 20} />
-                {!collapsed && <span>Content</span>}
+                {!collapsed && <span>Featured</span>}
               </a>
             </li>
             <li>
-              <a href="/dashboard/customers" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
-                <Users className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={collapsed ? 24 : 20} />
-                {!collapsed && <span>Customers</span>}
+              <a href="/dashboard/footer" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                <FileText className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={collapsed ? 24 : 20} />
+                {!collapsed && <span>Footer</span>}
               </a>
             </li>
             <li>
-              <a href="/dashboard/reviews" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
-                <MessageSquare className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={collapsed ? 24 : 20} />
-                {!collapsed && <span>Reviews</span>}
+              <a href="/dashboard/about" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                <FileText className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={collapsed ? 24 : 20} />
+                {!collapsed && <span>About</span>}
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/export" className="flex items-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                <Download className={`${collapsed ? 'mx-auto' : 'mr-3'}`} size={collapsed ? 24 : 20} />
+                {!collapsed && <span>Export</span>}
               </a>
             </li>
             <li>

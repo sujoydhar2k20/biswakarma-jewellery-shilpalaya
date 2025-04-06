@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
+import { DataProvider } from "./contexts/DataContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -18,6 +19,7 @@ import TestimonialsEditor from "./pages/TestimonialsEditor";
 import PaymentMethodsEditor from "./pages/PaymentMethodsEditor";
 import AboutEditor from "./pages/AboutEditor";
 import FooterEditor from "./pages/FooterEditor";
+import ExportPage from "./pages/ExportPage";
 import DashboardSidebar from "./components/DashboardSidebar";
 
 const queryClient = new QueryClient();
@@ -49,6 +51,7 @@ const DashboardLayout = () => {
             <Route path="payments" element={<PaymentMethodsEditor />} />
             <Route path="about" element={<AboutEditor />} />
             <Route path="footer" element={<FooterEditor />} />
+            <Route path="export" element={<ExportPage />} />
           </Routes>
         </div>
       </div>
@@ -76,27 +79,29 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<Login />} />
-            
-            {/* Dashboard Routes */}
-            <Route 
-              path="/dashboard/*" 
-              element={
-                <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              } 
-            />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <DataProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/admin" element={<Login />} />
+              
+              {/* Dashboard Routes */}
+              <Route 
+                path="/dashboard/*" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </DataProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

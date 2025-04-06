@@ -1,33 +1,47 @@
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, X, Plus, ArrowUp, ArrowDown } from "lucide-react";
+import { Upload, X, Plus, ArrowUp, ArrowDown, Loader2 } from "lucide-react";
+import { fetchHeroBanners, saveHeroBanner, deleteHeroBanner } from "@/services/supabaseService";
 
 const BannerEditor = () => {
-  const [banners, setBanners] = useState([
-    {
-      id: 1,
-      title: "Exclusive Diamond Collection",
-      subtitle: "Timeless elegance for every occasion",
-      imageUrl: "https://placeholder.pics/svg/1600x600",
-      buttonText: "Explore Now",
-      buttonLink: "/collections/diamond"
-    },
-    {
-      id: 2,
-      title: "Traditional Gold Jewelry",
-      subtitle: "Celebrating our heritage with exquisite craftsmanship",
-      imageUrl: "https://placeholder.pics/svg/1600x600/DEDEDE/555555",
-      buttonText: "View Collection",
-      buttonLink: "/collections/gold"
-    }
-  ]);
-
+  const [banners, setBanners] = useState([]);
   const [editingBanner, setEditingBanner] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    loadBanners();
+  }, []);
+
+  const loadBanners = async () => {
+    setIsLoading(true);
+    try {
+      const data = await fetchHeroBanners();
+      
+      // Transform data to match component's expected format
+      const transformedData = data.map(item => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.subtitle,
+        imageUrl: item.image_url,
+        buttonText: item.button_text,
+        buttonLink: item.button_link,
+        display_order: item.display_order
+      }));
+      
+      setBanners(transformedData);
+    } catch (error) {
+      console.error("Error loading banners:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleEditBanner = (banner) => {
     setEditingBanner({...banner});
@@ -35,39 +49,101 @@ const BannerEditor = () => {
 
   const handleAddBanner = () => {
     setEditingBanner({
-      id: Date.now(),
+      id: `temp_${Date.now()}`,
       title: "",
       subtitle: "",
       imageUrl: "",
       buttonText: "Shop Now",
-      buttonLink: "/"
+      buttonLink: "/",
+      display_order: banners.length
     });
   };
 
-  const handleSaveBanner = () => {
-    if (editingBanner) {
-      const existing = banners.find(b => b.id === editingBanner.id);
-      if (existing) {
-        setBanners(banners.map(b => b.id === editingBanner.id ? editingBanner : b));
-      } else {
-        setBanners([...banners, editingBanner]);
-      }
+  const handleSaveBanner = async () => {
+    if (!editingBanner) return;
+    
+    setIsSaving(true);
+    try {
+      const updatedBanners = await saveHeroBanner(editingBanner);
+      
+      // Transform data to match component's expected format
+      const transformedData = updatedBanners.map(item => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.subtitle,
+        imageUrl: item.image_url,
+        buttonText: item.button_text,
+        buttonLink: item.button_link,
+        display_order: item.display_order
+      }));
+      
+      setBanners(transformedData);
       setEditingBanner(null);
+    } catch (error) {
+      console.error("Error saving banner:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleDeleteBanner = (id) => {
-    setBanners(banners.filter(banner => banner.id !== id));
+  const handleDeleteBanner = async (id) => {
+    if (window.confirm("Are you sure you want to delete this banner?")) {
+      try {
+        const updatedBanners = await deleteHeroBanner(id);
+        
+        // Transform data to match component's expected format
+        const transformedData = updatedBanners.map(item => ({
+          id: item.id,
+          title: item.title,
+          subtitle: item.subtitle,
+          imageUrl: item.image_url,
+          buttonText: item.button_text,
+          buttonLink: item.button_link,
+          display_order: item.display_order
+        }));
+        
+        setBanners(transformedData);
+      } catch (error) {
+        console.error("Error deleting banner:", error);
+      }
+    }
   };
 
-  const moveBanner = (id, direction) => {
+  const moveBanner = async (id, direction) => {
     const index = banners.findIndex(banner => banner.id === id);
     if ((direction === 'up' && index > 0) || (direction === 'down' && index < banners.length - 1)) {
       const newBanners = [...banners];
       const swap = direction === 'up' ? index - 1 : index + 1;
       
+      // Swap display order
+      const tempOrder = newBanners[index].display_order;
+      newBanners[index].display_order = newBanners[swap].display_order;
+      newBanners[swap].display_order = tempOrder;
+      
+      // Swap positions in array
       [newBanners[index], newBanners[swap]] = [newBanners[swap], newBanners[index]];
+      
       setBanners(newBanners);
+      
+      // Update both banners in the database
+      try {
+        await saveHeroBanner(newBanners[swap]);
+        await saveHeroBanner(newBanners[index]);
+      } catch (error) {
+        console.error("Error updating banner order:", error);
+      }
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Store the actual file object for later upload
+      setEditingBanner({...editingBanner, imageUrl: file});
+      
+      // Also create a preview URL for display
+      const previewUrl = URL.createObjectURL(file);
+      setEditingBanner({...editingBanner, imageUrl: file, imagePreview: previewUrl});
     }
   };
 
@@ -82,69 +158,81 @@ const BannerEditor = () => {
       </div>
       
       {/* Banner List */}
-      <div className="space-y-4">
-        {banners.map(banner => (
-          <Card key={banner.id} className="p-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="w-full md:w-40 h-24 bg-gray-200 rounded overflow-hidden flex-shrink-0">
-                <img 
-                  src={banner.imageUrl || "/placeholder.svg"} 
-                  alt={banner.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex-grow">
-                <h3 className="font-medium">{banner.title}</h3>
-                <p className="text-sm text-gray-500 mt-1">{banner.subtitle}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                    Button: {banner.buttonText}
-                  </span>
-                  <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                    Link: {banner.buttonLink}
-                  </span>
-                </div>
-              </div>
-              <div className="flex md:flex-col gap-2 justify-end">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="flex-shrink-0"
-                  onClick={() => handleEditBanner(banner)}
-                >
-                  Edit
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
-                  onClick={() => handleDeleteBanner(banner.id)}
-                >
-                  Delete
-                </Button>
-                <div className="flex md:flex-col gap-1 mt-2">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="p-0 h-8 w-8"
-                    onClick={() => moveBanner(banner.id, 'up')}
-                  >
-                    <ArrowUp size={16} />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="p-0 h-8 w-8"
-                    onClick={() => moveBanner(banner.id, 'down')}
-                  >
-                    <ArrowDown size={16} />
-                  </Button>
-                </div>
-              </div>
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {banners.length === 0 && (
+            <div className="text-center py-12 bg-gray-50 rounded-md">
+              <p className="text-gray-500">No banners found. Add your first banner to get started!</p>
             </div>
-          </Card>
-        ))}
-      </div>
+          )}
+          
+          {banners.map(banner => (
+            <Card key={banner.id} className="p-4">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="w-full md:w-40 h-24 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+                  <img 
+                    src={banner.imageUrl || "/placeholder.svg"} 
+                    alt={banner.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-grow">
+                  <h3 className="font-medium">{banner.title}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{banner.subtitle}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                      Button: {banner.buttonText}
+                    </span>
+                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                      Link: {banner.buttonLink}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex md:flex-col gap-2 justify-end">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-shrink-0"
+                    onClick={() => handleEditBanner(banner)}
+                  >
+                    Edit
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
+                    onClick={() => handleDeleteBanner(banner.id)}
+                  >
+                    Delete
+                  </Button>
+                  <div className="flex md:flex-col gap-1 mt-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="p-0 h-8 w-8"
+                      onClick={() => moveBanner(banner.id, 'up')}
+                    >
+                      <ArrowUp size={16} />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="p-0 h-8 w-8"
+                      onClick={() => moveBanner(banner.id, 'down')}
+                    >
+                      <ArrowDown size={16} />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
       
       {/* Edit Banner Modal */}
       {editingBanner && (
@@ -169,10 +257,10 @@ const BannerEditor = () => {
                 <div>
                   <Label htmlFor="banner-image">Banner Image</Label>
                   <div className="mt-2 border-2 border-dashed rounded-md p-4 text-center">
-                    {editingBanner.imageUrl ? (
+                    {(editingBanner.imageUrl || editingBanner.imagePreview) ? (
                       <div className="relative">
                         <img 
-                          src={editingBanner.imageUrl} 
+                          src={editingBanner.imagePreview || editingBanner.imageUrl} 
                           alt="Banner preview"
                           className="mx-auto max-h-40 object-contain"
                         />
@@ -180,7 +268,7 @@ const BannerEditor = () => {
                           variant="outline"
                           size="sm"
                           className="mt-2"
-                          onClick={() => setEditingBanner({...editingBanner, imageUrl: ""})}
+                          onClick={() => setEditingBanner({...editingBanner, imageUrl: "", imagePreview: null})}
                         >
                           Remove Image
                         </Button>
@@ -195,22 +283,17 @@ const BannerEditor = () => {
                           variant="outline"
                           size="sm"
                           className="mt-2"
+                          onClick={() => fileInputRef.current?.click()}
                         >
                           Choose Image
                         </Button>
                         <Input 
+                          ref={fileInputRef}
                           type="file" 
                           id="banner-image" 
                           className="sr-only"
                           accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              // In a real app, this would upload to a server
-                              const fakeUrl = URL.createObjectURL(file);
-                              setEditingBanner({...editingBanner, imageUrl: fakeUrl});
-                            }
-                          }}
+                          onChange={handleImageChange}
                         />
                       </div>
                     )}
@@ -268,7 +351,9 @@ const BannerEditor = () => {
                   </Button>
                   <Button
                     onClick={handleSaveBanner}
+                    disabled={isSaving}
                   >
+                    {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Save Banner
                   </Button>
                 </div>
