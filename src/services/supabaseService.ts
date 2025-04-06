@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -40,9 +41,13 @@ export async function saveHeroBanner(banner: Partial<HeroBanner> & { imagePrevie
         banner.image_url !== null &&
         'name' in banner.image_url && 
         'size' in banner.image_url) {
+      
+      // Explicit type assertion and null check
       const file = banner.image_url as File;
+      
       if (file) {
-        const fileExt = file.name.split('.').pop();
+        // Safely access file properties after null check
+        const fileExt = file.name ? file.name.split('.').pop() : 'jpg';
         const fileName = `banner-${Date.now()}.${fileExt}`;
         
         const { data: uploadData, error: uploadError } = await supabase
