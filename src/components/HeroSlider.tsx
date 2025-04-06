@@ -11,9 +11,9 @@ const defaultSlides = [
     id: "1",
     title: "Elegant Diamond Collection",
     subtitle: "Timeless beauty crafted with precision",
-    buttonText: "Explore Collection",
-    imageUrl: '/placeholder.svg',
-    buttonLink: "#"
+    button_text: "Explore Collection",
+    image_url: '/placeholder.svg',
+    button_link: "#"
   }
 ];
 
@@ -21,9 +21,9 @@ interface FormattedSlide {
   id: string;
   title: string;
   subtitle?: string | null;
-  buttonText?: string | null;
-  buttonLink?: string | null;
-  imageUrl?: string | null;
+  button_text?: string | null;
+  button_link?: string | null;
+  image_url?: string | null;
 }
 
 const HeroSlider = () => {
@@ -39,9 +39,9 @@ const HeroSlider = () => {
         id: item.id,
         title: item.title,
         subtitle: item.subtitle,
-        buttonText: item.button_text,
-        buttonLink: item.button_link,
-        imageUrl: item.image_url
+        button_text: item.button_text,
+        button_link: item.button_link,
+        image_url: item.image_url
       }));
       
       setSlides(formattedSlides);
@@ -60,9 +60,9 @@ const HeroSlider = () => {
           id: item.id,
           title: item.title,
           subtitle: item.subtitle,
-          buttonText: item.button_text,
-          buttonLink: item.button_link,
-          imageUrl: item.image_url
+          button_text: item.button_text,
+          button_link: item.button_link,
+          image_url: item.image_url
         }));
         
         setSlides(formattedSlides);
@@ -108,7 +108,7 @@ const HeroSlider = () => {
             index === currentIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${slide.imageUrl || '/placeholder.svg'})`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${slide.image_url || '/placeholder.svg'})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -122,7 +122,7 @@ const HeroSlider = () => {
                 {slide.subtitle}
               </p>
               <Button size="lg" className="px-10 py-7 text-lg">
-                {slide.buttonText}
+                {slide.button_text}
               </Button>
             </div>
           </div>

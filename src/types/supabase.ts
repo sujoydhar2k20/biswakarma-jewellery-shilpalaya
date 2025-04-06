@@ -1,4 +1,5 @@
 
+
 export interface HeroBanner {
   id: string;
   title: string;
@@ -102,3 +103,4 @@ export interface FooterContent {
   created_at: string;
   updated_at: string;
 }
+

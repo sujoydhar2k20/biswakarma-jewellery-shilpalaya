@@ -30,13 +30,13 @@ export async function fetchHeroBanners(): Promise<HeroBanner[]> {
   }
 }
 
-export async function saveHeroBanner(banner: Partial<HeroBanner>): Promise<HeroBanner[]> {
+export async function saveHeroBanner(banner: Partial<HeroBanner> & { imagePreview?: string }): Promise<HeroBanner[]> {
   try {
-    let imageUrl = banner.imageUrl;
+    let image_url = banner.image_url;
     
     // If the image is a Blob/File, upload it to storage
-    if (typeof banner.imageUrl === 'object' && banner.imageUrl instanceof File) {
-      const file = banner.imageUrl;
+    if (typeof banner.image_url === 'object' && banner.image_url instanceof File) {
+      const file = banner.image_url;
       const fileExt = file.name.split('.').pop();
       const fileName = `banner-${Date.now()}.${fileExt}`;
       
@@ -52,7 +52,7 @@ export async function saveHeroBanner(banner: Partial<HeroBanner>): Promise<HeroB
         .from('website_images')
         .getPublicUrl(`banners/${fileName}`);
       
-      imageUrl = data.publicUrl;
+      image_url = data.publicUrl;
     }
     
     // Determine if we're updating or inserting
@@ -64,12 +64,12 @@ export async function saveHeroBanner(banner: Partial<HeroBanner>): Promise<HeroB
         .update({
           title: banner.title,
           subtitle: banner.subtitle,
-          image_url: imageUrl,
-          button_text: banner.buttonText,
-          button_link: banner.buttonLink,
+          image_url: image_url,
+          button_text: banner.button_text,
+          button_link: banner.button_link,
           display_order: banner.display_order || 0,
           updated_at: new Date().toISOString()
-        } as Partial<HeroBanner>)
+        })
         .eq('id', existingBannerId);
       
       if (error) throw error;
@@ -78,13 +78,13 @@ export async function saveHeroBanner(banner: Partial<HeroBanner>): Promise<HeroB
       const { error } = await supabase
         .from('hero_banners')
         .insert({
-          title: banner.title,
+          title: banner.title || '',
           subtitle: banner.subtitle,
-          image_url: imageUrl,
-          button_text: banner.buttonText,
-          button_link: banner.buttonLink,
+          image_url: image_url,
+          button_text: banner.button_text,
+          button_link: banner.button_link,
           display_order: banner.display_order || 0
-        } as Partial<HeroBanner>);
+        });
       
       if (error) throw error;
       toast.success('Banner added successfully');
@@ -170,7 +170,7 @@ export async function saveCollection(collection: any): Promise<Collection[]> {
           type: collection.type,
           display_order: collection.display_order || 0,
           updated_at: new Date().toISOString()
-        } as Partial<Collection>)
+        })
         .eq('id', existingId);
       
       if (error) throw error;
@@ -179,12 +179,12 @@ export async function saveCollection(collection: any): Promise<Collection[]> {
       const { error } = await supabase
         .from('collections')
         .insert({
-          name: collection.name,
+          name: collection.name || '',
           image: imageUrl,
           link: collection.link,
-          type: collection.type,
+          type: collection.type || '',
           display_order: collection.display_order || 0
-        } as Partial<Collection>);
+        });
       
       if (error) throw error;
       toast.success('Collection added successfully');
@@ -270,7 +270,7 @@ export async function saveFeaturedCollection(collection: any): Promise<FeaturedC
           category: collection.category,
           display_order: collection.display_order || 0,
           updated_at: new Date().toISOString()
-        } as Partial<FeaturedCollection>)
+        })
         .eq('id', existingId);
       
       if (error) throw error;
@@ -279,12 +279,12 @@ export async function saveFeaturedCollection(collection: any): Promise<FeaturedC
       const { error } = await supabase
         .from('featured_collections')
         .insert({
-          name: collection.name,
+          name: collection.name || '',
           description: collection.description,
           image: imageUrl,
           category: collection.category,
           display_order: collection.display_order || 0
-        } as Partial<FeaturedCollection>);
+        });
       
       if (error) throw error;
       toast.success('Featured collection added successfully');
@@ -370,7 +370,7 @@ export async function saveTestimonial(testimonial: any): Promise<Testimonial[]> 
           image: imageUrl,
           display_order: testimonial.display_order || 0,
           updated_at: new Date().toISOString()
-        } as Partial<Testimonial>)
+        })
         .eq('id', existingId);
       
       if (error) throw error;
@@ -379,12 +379,12 @@ export async function saveTestimonial(testimonial: any): Promise<Testimonial[]> 
       const { error } = await supabase
         .from('testimonials')
         .insert({
-          name: testimonial.name,
+          name: testimonial.name || '',
           title: testimonial.title,
-          content: testimonial.content,
+          content: testimonial.content || '',
           image: imageUrl,
           display_order: testimonial.display_order || 0
-        } as Partial<Testimonial>);
+        });
       
       if (error) throw error;
       toast.success('Testimonial added successfully');
@@ -468,13 +468,13 @@ export async function saveAboutSection(aboutData: any): Promise<AboutSection | n
       const { error } = await supabase
         .from('about_section')
         .update({
-          title: aboutData.title,
+          title: aboutData.title || '',
           description1: aboutData.description1,
           description2: aboutData.description2,
           image: imageUrl,
           years_experience: aboutData.yearsExperience,
           updated_at: new Date().toISOString()
-        } as Partial<AboutSection>)
+        })
         .eq('id', existingData[0].id);
       
       if (error) throw error;
@@ -485,12 +485,12 @@ export async function saveAboutSection(aboutData: any): Promise<AboutSection | n
       const { data, error } = await supabase
         .from('about_section')
         .insert({
-          title: aboutData.title,
+          title: aboutData.title || '',
           description1: aboutData.description1,
           description2: aboutData.description2,
           image: imageUrl,
           years_experience: aboutData.yearsExperience
-        } as Partial<AboutSection>)
+        })
         .select();
       
       if (error) throw error;
@@ -508,7 +508,7 @@ export async function saveAboutSection(aboutData: any): Promise<AboutSection | n
       
       // Insert new features
       const featuresWithAboutId = aboutData.features.map((feature: any, index: number) => ({
-        title: feature.title,
+        title: feature.title || '',
         description: feature.description,
         icon: feature.icon,
         about_id: aboutId,
@@ -517,7 +517,7 @@ export async function saveAboutSection(aboutData: any): Promise<AboutSection | n
       
       const { error: featuresError } = await supabase
         .from('about_features')
-        .insert(featuresWithAboutId as Partial<AboutFeature>[]);
+        .insert(featuresWithAboutId);
       
       if (featuresError) throw featuresError;
     }
@@ -569,7 +569,7 @@ export async function saveFooterContent(section: string, content: any): Promise<
         .update({
           content,
           updated_at: new Date().toISOString()
-        } as Partial<FooterContent>)
+        })
         .eq('id', existingData[0].id);
       
       if (error) throw error;
@@ -579,8 +579,8 @@ export async function saveFooterContent(section: string, content: any): Promise<
         .from('footer_content')
         .insert({
           section,
-          content
-        } as Partial<FooterContent>);
+          content: content
+        });
       
       if (error) throw error;
     }

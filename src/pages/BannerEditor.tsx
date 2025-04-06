@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,10 +12,10 @@ interface EditorBanner {
   id: string;
   title: string;
   subtitle?: string | null;
-  imageUrl?: string | null;
+  image_url?: string | null;
   imagePreview?: string | null;
-  buttonText?: string | null;
-  buttonLink?: string | null;
+  button_text?: string | null;
+  button_link?: string | null;
   display_order: number;
 }
 
@@ -41,9 +40,9 @@ const BannerEditor = () => {
         id: item.id,
         title: item.title,
         subtitle: item.subtitle,
-        imageUrl: item.image_url,
-        buttonText: item.button_text,
-        buttonLink: item.button_link,
+        image_url: item.image_url,
+        button_text: item.button_text,
+        button_link: item.button_link,
         display_order: item.display_order
       }));
       
@@ -64,9 +63,9 @@ const BannerEditor = () => {
       id: `temp_${Date.now()}`,
       title: "",
       subtitle: "",
-      imageUrl: "",
-      buttonText: "Shop Now",
-      buttonLink: "/",
+      image_url: "",
+      button_text: "Shop Now",
+      button_link: "/",
       display_order: banners.length
     });
   };
@@ -83,9 +82,9 @@ const BannerEditor = () => {
         id: item.id,
         title: item.title,
         subtitle: item.subtitle,
-        imageUrl: item.image_url,
-        buttonText: item.button_text,
-        buttonLink: item.button_link,
+        image_url: item.image_url,
+        button_text: item.button_text,
+        button_link: item.button_link,
         display_order: item.display_order
       }));
       
@@ -108,9 +107,9 @@ const BannerEditor = () => {
           id: item.id,
           title: item.title,
           subtitle: item.subtitle,
-          imageUrl: item.image_url,
-          buttonText: item.button_text,
-          buttonLink: item.button_link,
+          image_url: item.image_url,
+          button_text: item.button_text,
+          button_link: item.button_link,
           display_order: item.display_order
         }));
         
@@ -151,11 +150,11 @@ const BannerEditor = () => {
     const file = e.target.files?.[0];
     if (file && editingBanner) {
       // Store the actual file object for later upload
-      setEditingBanner({...editingBanner, imageUrl: file as unknown as string});
+      setEditingBanner({...editingBanner, image_url: file as unknown as string});
       
       // Also create a preview URL for display
       const previewUrl = URL.createObjectURL(file);
-      setEditingBanner({...editingBanner, imageUrl: file as unknown as string, imagePreview: previewUrl});
+      setEditingBanner({...editingBanner, image_url: file as unknown as string, imagePreview: previewUrl});
     }
   };
 
@@ -187,7 +186,7 @@ const BannerEditor = () => {
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="w-full md:w-40 h-24 bg-gray-200 rounded overflow-hidden flex-shrink-0">
                   <img 
-                    src={banner.imageUrl || "/placeholder.svg"} 
+                    src={banner.image_url || "/placeholder.svg"} 
                     alt={banner.title}
                     className="w-full h-full object-cover"
                   />
@@ -197,10 +196,10 @@ const BannerEditor = () => {
                   <p className="text-sm text-gray-500 mt-1">{banner.subtitle}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                      Button: {banner.buttonText}
+                      Button: {banner.button_text}
                     </span>
                     <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                      Link: {banner.buttonLink}
+                      Link: {banner.button_link}
                     </span>
                   </div>
                 </div>
@@ -209,7 +208,7 @@ const BannerEditor = () => {
                     variant="outline" 
                     size="sm" 
                     className="flex-shrink-0"
-                    onClick={() => handleEditBanner(banner)}
+                    onClick={() => setEditingBanner({...banner})}
                   >
                     Edit
                   </Button>
@@ -269,10 +268,10 @@ const BannerEditor = () => {
                 <div>
                   <Label htmlFor="banner-image">Banner Image</Label>
                   <div className="mt-2 border-2 border-dashed rounded-md p-4 text-center">
-                    {(editingBanner.imageUrl || editingBanner.imagePreview) ? (
+                    {(editingBanner.image_url || editingBanner.imagePreview) ? (
                       <div className="relative">
                         <img 
-                          src={editingBanner.imagePreview || editingBanner.imageUrl || ""} 
+                          src={editingBanner.imagePreview || editingBanner.image_url || ""} 
                           alt="Banner preview"
                           className="mx-auto max-h-40 object-contain"
                         />
@@ -280,7 +279,7 @@ const BannerEditor = () => {
                           variant="outline"
                           size="sm"
                           className="mt-2"
-                          onClick={() => setEditingBanner({...editingBanner, imageUrl: "", imagePreview: null})}
+                          onClick={() => setEditingBanner({...editingBanner, image_url: "", imagePreview: null})}
                         >
                           Remove Image
                         </Button>
@@ -337,8 +336,8 @@ const BannerEditor = () => {
                     <Label htmlFor="banner-button-text">Button Text</Label>
                     <Input 
                       id="banner-button-text" 
-                      value={editingBanner.buttonText || ""} 
-                      onChange={(e) => setEditingBanner({...editingBanner, buttonText: e.target.value})}
+                      value={editingBanner.button_text || ""} 
+                      onChange={(e) => setEditingBanner({...editingBanner, button_text: e.target.value})}
                       className="mt-1"
                     />
                   </div>
@@ -347,8 +346,8 @@ const BannerEditor = () => {
                     <Label htmlFor="banner-button-link">Button Link</Label>
                     <Input 
                       id="banner-button-link" 
-                      value={editingBanner.buttonLink || ""} 
-                      onChange={(e) => setEditingBanner({...editingBanner, buttonLink: e.target.value})}
+                      value={editingBanner.button_link || ""} 
+                      onChange={(e) => setEditingBanner({...editingBanner, button_link: e.target.value})}
                       className="mt-1"
                     />
                   </div>
