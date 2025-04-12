@@ -25,14 +25,17 @@ export async function saveCollection(collection: Partial<Collection> & { image?:
     let imageUrl = collection.image;
     
     // If the image is a File object, upload it to storage
-    if (collection.image && typeof collection.image === 'object' && collection.image instanceof File) {
-      try {
-        const uploadedUrl = await uploadFile(collection.image, 'collections');
-        if (uploadedUrl) imageUrl = uploadedUrl;
-      } catch (uploadError) {
-        console.error('Error uploading collection image:', uploadError);
-        toast.error('Failed to upload image');
-        // Continue with save operation even if image upload fails
+    if (collection.image && typeof collection.image === 'object') {
+      // Check if it's a File object
+      if (collection.image instanceof File) {
+        try {
+          const uploadedUrl = await uploadFile(collection.image, 'collections');
+          if (uploadedUrl) imageUrl = uploadedUrl;
+        } catch (uploadError) {
+          console.error('Error uploading collection image:', uploadError);
+          toast.error('Failed to upload image');
+          // Continue with save operation even if image upload fails
+        }
       }
     }
     

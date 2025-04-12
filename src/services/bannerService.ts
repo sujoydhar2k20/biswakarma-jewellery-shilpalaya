@@ -30,10 +30,13 @@ export async function saveHeroBanner(banner: Partial<HeroBanner> & { imagePrevie
     if (banner.image_url && 
         typeof banner.image_url === 'object') {
       
-      // Type guard to check if it's a File
-      if (banner.image_url !== null && 'name' in banner.image_url && 'size' in banner.image_url) {
-        // Safe type assertion after check
-        const file = banner.image_url as File;
+      // Safe type check for File object
+      if (banner.image_url !== null && 
+          'name' in banner.image_url && 
+          'size' in banner.image_url &&
+          banner.image_url instanceof File) {
+        
+        const file = banner.image_url;
         
         const fileExt = file.name ? file.name.split('.').pop() : 'jpg';
         const fileName = `banner-${Date.now()}.${fileExt}`;
